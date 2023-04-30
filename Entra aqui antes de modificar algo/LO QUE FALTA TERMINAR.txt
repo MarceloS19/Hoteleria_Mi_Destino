@@ -1,0 +1,12 @@
+
+- Falta mejorar la interfaz del inicio sesion junto al de olvidar contraseña y la de crear cuenta.
+
+- Falta hacer el carrito de compras (Que sea funcional)
+
+- Falta hacer los registros de la compra junto a una pequeña descripcion de dichos datos.
+
+- Quitar los Lorem Imput y poner datos casi reales.
+
+- Finalmente mejorar la interfaz del inicio (Si quieren cambien las imagenes)
+
+PD: AL HACER EL CARRITO Y LOS REGISTROS HAGAN ESTILOS (STYLES) INDEPENDIENTES PARA QUE NO SE CONFUNDAN (POR EJEMPLO: STYLE3)
