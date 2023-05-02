@@ -1,238 +1,130 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Carrito/Mi destino</title>
-    <link rel="shortcut icon" href="images/logo.png" type="image/x-icon">
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <link rel="stylesheet" href="Estilos/style3.css">
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-          // Variables
-          const baseDeDatos = [
-              {
-                  id: 1,
-                  nombre:'PAQUETE 1   /  2 personas ',
-                  descripcion:'este paquete incluye',
-                  precio: 500000,
-                  imagen: ''
-              },
-              {
-                  id: 2,
-                  nombre: 'PAQUETE 2  /  2 personas ',
-                  precio: 750000,
-                  imagen: ''
-              },
-              {
-                  id: 3,
-                  nombre: 'PAQUETE 3  /  2 personas',
-                  precio: 1000000,
-                  imagen: ''
-              },
-          
-          ];
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <link rel="icon" type="image/svg+xml" href="Images/favicon.svg" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Carrito JS</title>
+        <link rel="stylesheet" href="Estilos/style_carrito.css">
 
-          let carrito = [];
-          const divisa = '$';
-          const DOMitems = document.querySelector('#items');
-          const DOMcarrito = document.querySelector('#carrito');
-          const DOMtotal = document.querySelector('#total');
-          const DOMbotonVaciar = document.querySelector('#boton-vaciar');
-          const DOMbotonpagar = document.querySelector('#boton-pagar')
-          const miLocalStorage = window.localStorage;
-
-          // Funciones
-
-          /**
-          * Dibuja todos los productos a partir de la base de datos. No confundir con el carrito
-          */
-          function renderizarProductos() {
-              baseDeDatos.forEach((info) => {
-                  // Estructura
-                  const miNodo = document.createElement('div');
-                  miNodo.classList.add('card', 'col-sm-4');
-                  // Body
-                  const miNodoCardBody = document.createElement('div');
-                  miNodoCardBody.classList.add('card-body');
-                  // Titulo
-                  const miNodoTitle = document.createElement('h5');
-                  miNodoTitle.classList.add('card-title');
-                  miNodoTitle.textContent = info.nombre;
-                  // Imagen
-                  const miNodoImagen = document.createElement('img');
-                  miNodoImagen.classList.add('img-fluid');
-                  miNodoImagen.setAttribute('src', info.imagen);
-                  // Precio
-                  const miNodoPrecio = document.createElement('p');
-                  miNodoPrecio.classList.add('card-text');
-                  miNodoPrecio.textContent = `${info.precio}${divisa}`;
-                  // Boton 
-                  const miNodoBoton = document.createElement('button');
-                  miNodoBoton.classList.add('btn', 'btn-primary');
-                  miNodoBoton.textContent = '+';
-                  miNodoBoton.setAttribute('marcador', info.id);
-                  miNodoBoton.addEventListener('click', anyadirProductoAlCarrito);
-                  // Insertamos
-                  miNodoCardBody.appendChild(miNodoImagen);
-                  miNodoCardBody.appendChild(miNodoTitle);
-                  miNodoCardBody.appendChild(miNodoPrecio);
-                  miNodoCardBody.appendChild(miNodoBoton);
-                  miNodo.appendChild(miNodoCardBody);
-                  DOMitems.appendChild(miNodo);
-              });
-          }
-
-          /**
-          * Evento para añadir un producto al carrito de la compra
-          */
-          function anyadirProductoAlCarrito(evento) {
-              // Anyadimos el Nodo a nuestro carrito
-              carrito.push(evento.target.getAttribute('marcador'))
-              // Actualizamos el carrito 
-              renderizarCarrito();
-
-          }
-
-          /**
-          * Dibuja todos los productos guardados en el carrito
-          */
-          function renderizarCarrito() {
-              // Vaciamos todo el html
-              DOMcarrito.textContent = '';
-              // Quitamos los duplicados
-              const carritoSinDuplicados = [...new Set(carrito)];
-              // Generamos los Nodos a partir de carrito
-              carritoSinDuplicados.forEach((item) => {
-                  // Obtenemos el item que necesitamos de la variable base de datos
-                  const miItem = baseDeDatos.filter((itemBaseDatos) => {
-                      // ¿Coincide las id? Solo puede existir un caso
-                      return itemBaseDatos.id === parseInt(item);
-                  });
-                  // Cuenta el número de veces que se repite el producto
-                  const numeroUnidadesItem = carrito.reduce((total, itemId) => {
-                      // ¿Coincide las id? Incremento el contador, en caso contrario no mantengo
-                      return itemId === item ? total += 1 : total;
-                  }, 0);
-                  // Creamos el nodo del item del carrito
-                  const miNodo = document.createElement('li');
-                  miNodo.classList.add('list-group-item', 'text-right', 'mx-2');
-                  miNodo.textContent = `${numeroUnidadesItem} x ${miItem[0].nombre} - ${miItem[0].precio}${divisa}`;
-                  // Boton de borrar
-                  const miBoton = document.createElement('button');
-                  miBoton.classList.add('btn', 'btn-danger', 'mx-5');
-                  miBoton.textContent = 'X';
-                  miBoton.style.marginLeft = '1rem';
-                  miBoton.dataset.item = item;
-                  miBoton.addEventListener('click', borrarItemCarrito);
-                  // Mezclamos nodos
-                  miNodo.appendChild(miBoton);
-                  DOMcarrito.appendChild(miNodo);
-              });
-             // Renderizamos el precio total en el HTML
-             DOMtotal.textContent = calcularTotal();
-          }
-
-          /**
-          * Evento para borrar un elemento del carrito
-          */
-          function borrarItemCarrito(evento) {
-              // Obtenemos el producto ID que hay en el boton pulsado
-              const id = evento.target.dataset.item;
-              // Borramos todos los productos
-              carrito = carrito.filter((carritoId) => {
-                  return carritoId !== id;
-              });
-              // volvemos a renderizar
-              renderizarCarrito();
-          }
-
-          /**
-           * Calcula el precio total teniendo en cuenta los productos repetidos
-           */
-          function calcularTotal() {
-              // Recorremos el array del carrito 
-              return carrito.reduce((total, item) => {
-                  // De cada elemento obtenemos su precio
-                  const miItem = baseDeDatos.filter((itemBaseDatos) => {
-                      return itemBaseDatos.id === parseInt(item);
-                  });
-                  // Los sumamos al total
-                  return total + miItem[0].precio;
-              }, 0).toFixed(2);
-          }
-
-          /**
-          * Varia el carrito y vuelve a dibujarlo
-          */
-          function vaciarCarrito() {
-              // Limpiamos los productos guardados
-              carrito = [];
-              // Renderizamos los cambios
-              renderizarCarrito();
-          }
-
-          // Eventos
-          DOMbotonVaciar.addEventListener('click', vaciarCarrito);
-
-          // Inicio
-          renderizarProductos();
-          renderizarCarrito();
-        });
-    </script>
-</head>
-<body>
-    <section class="tank-bootstrap-header">
-        <nav class="navbar navbar-expand-lg navbar-light py-lg-3 py-2">
-            <div class="container">
-                <a class="navbar-brand" href="home.html">Mi Destino</a>
-                <button class="navbar-toggler" type="button" 
-                data-toggle="collapse" data-target="#navbarSupportedContent">
-                    <span class="navbar-toggler-icon fa fa-bars"></span>
-                </button>
-                <div class="collapse navbar-collapse"  id="navbarSupportedContent" >
-                    <ul class="navbar-nav ml-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" href="home.html">Inicio</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="quienes_somos.html">Nosotros</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="servicios.html">Servicios</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="contacto.html">Contacto</a>
-
-                        <li class="nav-item">
-                             <a class="nav-link" href="inicio_sesion.html">Iniciar Sesión</a>
-
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="carrito.html">Carrito</a>
-                        </li>
-                    </ul>
+    
+    <!--LOGO / CARRITO)-->    
+    </head>
+    <body>
+        <header>
+            <div class="header-section container">
+                <img class="logo" src="Images/logoShop.png" alt="">
+                <div>
+                    <img onclick="showCart(this)" class="cart" src="Images/cart.png" alt="">
+                    <p class="count-product">0</p>
                 </div>
-           </div> 
-        </nav>
-    </section>
-    <div class="container">
-        <div class="row">
-            <!-- Elementos generados a partir del JSON -->
-            <main id="items" class="col-sm-8 row"></main>
-            <!-- Carrito -->
-            <aside class="col-sm-4">
-                <h2>Carrito de compras</h2>
-                <!-- Elementos del carrito -->
-                <ul id="carrito" class="list-group"></ul>
-                <hr>
-                <!-- Precio total -->
-                <p class="text-right">Total: $<span id="total"></span>;</p>
-                <button id="boton-vaciar" class="btn btn-danger">Vaciar</button>
-                <button id="boton-pagar" class="btn btn-dark">Finalizar Compra</button>
-            </aside>
-        </div>
-    </div>
+                <div class="cart-products" id="products-id">
+                    <p class="close-btn" onclick="closeBtn()">X</p>
+                    <h3>Mi carrito</h3>
+                    <div class="card-items">
+                    </div>
+                    <h2>Total: $<strong class="price-total">0</strong></h2>
+                </div>
+            </div>
+        </header>
+
+
+    <!--PRODUCTOS (PAQUETES)-->    
+        <section class="container">
+            <div class="products">
+                <div class="carts">
+                    <div>
+                        <img src="https://media.staticontent.com/media/pictures/44eee8bb-092c-46f8-9654-dbaac40da895/300x200" alt="">
+                        <p><span>990</span>$</p>
+                    </div>
+                    <p class="title"> PAQUETE 1</p>
+                    <a href="" data-id="1" class="btn-add-cart">Añadir al Carrito</a>
+                </div>
+                <div class="carts">
+                    <div>
+                        <img src="https://media.staticontent.com/media/pictures/771caaea-244c-4501-b8b7-4dbf29ea8483/300x200" alt="">
+                        <p><span>749</span>$</p>
+                    </div>
+                    <p class="title"> PAQUETE 2</p>
+                    <a href="" class="btn-add-cart" data-id="2">Añadir al Carrito</a>
+                </div>
+                <div class="carts">
+                    <div>
+                        <img src="https://media.staticontent.com/media/pictures/bee8c5a7-a4e8-447a-9be0-1794c2c0b8d0/300x200" alt="">
+                        <p><span>599</span>$</p>
+                    </div>
+                    <p class="title"> PAQUETE 3</p>
+                    <a href="" data-id="3" class="btn-add-cart">Añadir al Carrito</a>
+                </div>
+            </div>
+        </section>
+
+
+<!--VOLVER A LOS PRODUCTOS-->
+        <footer>
+            <p class="author">🥵 VOLVER A<a href="servicios.html" target="_blank">SERVICIOS</a></p>
+        </footer>
+ 
+
+<!--CUSTOM JS-->
+    <script>
+        function showCart(x){
+            document.getElementById("products-id").style.display = "block";
+        }
+        function closeBtn(){
+             document.getElementById("products-id").style.display = "none";
+        }
+
+    </script>
+    <script src="custom.js" ></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    
+
+
+    <script>
+        function showCart(x){
+            document.getElementById("products-id").style.display = "block";
+        }
+        function closeBtn(){
+             document.getElementById("products-id").style.display = "none";
+        }
+
+    </script>
+    <script src="JS/custom.js"></script>
 </body>
 </html>
