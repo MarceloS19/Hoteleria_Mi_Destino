@@ -11,7 +11,7 @@
 body {
     height: 100vh;
     font-family: 'Poppins', sans-serif;
-    background-image: linear-gradient(to top, #a18cd1 0%, #fbc2eb 100%);
+    background-image: linear-gradient(to top, #9b9b9b 0%, #9b9b9b 100%);
 }
 
 .login-container {
